@@ -1,17 +1,16 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: "82022704-ingress"
-spec:
-  ingressClassName: nginx
-  rules:
-  - host: "*.ce-82022704-sa.kubepia.net"
-    http:
-      paths:
-      - path: /
-        backend:
-          service:
-            name: my-82022704
-            port:
-              number: 8080
-        pathType: Prefix
+configMapGenerator:
+- files:
+  - application.yml
+  name: 82022704-configmap
+resources:
+- ../../base
+- pvc.yaml
+patchesStrategicMerge:
+- deployment.yaml
+- ingress.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namePrefix: prod-
+images:
+- name: ce82022704acr.azurecr.io/82022704
+  newTag: "202411190132"
